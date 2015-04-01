@@ -22,6 +22,8 @@ a {
   bottom: 0px;
   background-color: #f8f8f8;
   overflow-y: auto;
+  box-shadow: rgba(0, 0, 0, 0.298039) 1px 1px 1px 0px;
+  z-index: 2;
 }
 
 #left-sidebar .list-group {
@@ -55,6 +57,7 @@ a {
   top: 0px;
   right: 0px;
   bottom: 0px;
+  z-index: 1;
 }
 
 #container-map {
@@ -89,6 +92,7 @@ a {
 #left-expand {
   left: 0px;
   top: 0px;
+  z-index: 3;
 }
 
 #bottom-expand-pos {

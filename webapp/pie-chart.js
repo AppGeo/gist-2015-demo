@@ -1,5 +1,6 @@
 (function () {
-  var db = new cartodb.SQL({ user: 'clientdemos' });
+
+  // statistical query components for CartoDB per metric (ADT, IRI, PIC)
 
   var queries = [
     [
@@ -23,47 +24,68 @@
     ]
   ];
 
+  var db = new cartodb.SQL({ user: 'clientdemos' });
+
   var ctx = $('#pie-chart').get(0).getContext('2d');
   var pie, lastMetric;
 
   var $title = $('#pie-title');
 
-  var summary = function (metric, district) {
-    metric -= 1;
+  var pieChart = {
+    show: function (metric, district) {
 
-    var query = queries[metric].map(function (q) {
-      return q + (district ? ' and district = ' + district : '');
-    }).join(' union ');
+      // provided metric is 1-based
 
-    db.execute(query)
-      .done(function (result) {
-        result.rows.sort(function (a, b) {
-          return a.seq < b.seq ? -1 : a.seq > b.seq ? 1 : 0;
+      metric -= 1;
+
+      // generate the query for this metric and district
+
+      var query = queries[metric].map(function (q) {
+        return q + (district ? ' and district = ' + district : '');
+      }).join(' union ');
+
+      // execute the query
+
+      db.execute(query)
+        .done(function (result) {
+
+          // make sure the rows are sorted on sequence number
+
+          result.rows.sort(function (a, b) {
+            return a.seq < b.seq ? -1 : a.seq > b.seq ? 1 : 0;
+          });
+
+          // if the metric is different than last time, create a new chart
+
+          if (metric !== lastMetric) {
+            if (pie) {
+              pie.destroy();
+            }
+
+            pie = new Chart(ctx).Pie(result.rows, { animationEasing: "easeInOutQuart" });
+          }
+
+          // otherwise update the data on the current chart
+
+          else {
+            for (var i = 0; i < result.rows.length; ++i) {
+              pie.segments[i].value = result.rows[i].value;
+            }
+
+            pie.update();
+          }
+
+          // show the district number
+          
+          $title.text(district === 0 ? 'State of Iowa' : 'District ' + district);
+          lastMetric = metric;
+        })
+        .error(function (err) {
+          alert(err);
         });
-
-        if (metric !== lastMetric) {
-          if (pie) {
-            pie.destroy();
-          }
-
-          pie = new Chart(ctx).Pie(result.rows, { animationEasing: "easeInOutQuart" });
-        }
-        else {
-          for (var i = 0; i < result.rows.length; ++i) {
-            pie.segments[i].value = result.rows[i].value;
-          }
-
-          pie.update();
-        }
-
-        $title.text(district === 0 ? 'State of Iowa' : 'District ' + district);
-        lastMetric = metric;
-      })
-      .error(function (err) {
-        alert(err);
-      });
+    }
   };
 
   window.app = window.app || {};
-  window.app.summary = summary;
+  window.app.pieChart = pieChart;
 })();

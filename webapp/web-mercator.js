@@ -16,6 +16,10 @@
       var x = radius * p[0] * radiansPerDegree;
       var y = radius * Math.log(Math.tan(quarterPi + p[1] * radiansPerDegree * 0.5));
       return [ x, y ];
+    },
+
+    toDegrees: function (m) {
+      return m * degreesPerRadian / radius;
     }
   };
 
