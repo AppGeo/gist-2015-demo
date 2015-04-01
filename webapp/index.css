@@ -6,63 +6,103 @@ a {
   cursor: pointer;
 }
 
-.sidebar {
-  display: none;
-}
-@media (min-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 51px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: #f5f5f5;
-    border-right: 1px solid #eee;
-  }
-}
-
-.nav-sidebar {
-  margin-right: -21px;
-  margin-bottom: 20px;
-  margin-left: -20px;
-}
-.nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
-}
-.nav-sidebar > .active > a {
-  color: #fff;
-  background-color: #428bca;
-}
-
-.navbar-inverse {
-  background-color: #303030;
-}
-
-.navbar-inverse .navbar-brand {
-  color: #D0D0D0;
-}
-.main {
+#container-content {
   position: absolute;
   left: 0px;
   top: 51px;
   right: 0px;
   bottom: 0px;
-  padding: 0px;
+}
+
+#left-sidebar {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 250px;
+  bottom: 0px;
+  background-color: #f8f8f8;
+  overflow-y: auto;
+}
+
+#left-sidebar .list-group {
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#pie-title {
+  margin-left: 20px;
+  width: 210px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#pie-subtitle {
+  margin-left: 20px;
+  width: 210px;
+  text-align: center;
+  font-size: 11px;
+}
+
+#pie-chart {
+  margin-top: 10px;
+  margin-left: 20px;
+}
+
+#container-view {
+  position: absolute;
+  left: 250px;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+#container-map {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  height: 66%;
 }
 
 #map-canvas {
   width: 100%;
-  height: 66%
+  height: 100%;
 }
 
 #streetview-canvas {
-  width: 100%;
-  height: 34%;
+  position: absolute;
+  left: 0px;
+  top: 66%;
+  right: 0px;
+  bottom: 0px;
+}
+
+.expand {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: #f8f8f8;
+  padding-left: 2px;
+}
+
+#left-expand {
+  left: 0px;
+  top: 0px;
+}
+
+#bottom-expand-pos {
+  position: absolute;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  height: 20px;
+}
+
+#bottom-expand {
+  position: relative;
+  display: inline-block;
 }
 
 #searchForm {

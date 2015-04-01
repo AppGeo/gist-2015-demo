@@ -3,6 +3,9 @@
   var mouseIsDown = false;
   var searched = false;
 
+  var selectedMetric = 3;
+  var selectedDistrict = 0;
+
   var $map = $("#map-canvas").on("mousedown", function () {
     mouseIsDown = true;
   });
@@ -29,6 +32,10 @@
 
   map.controls[google.maps.ControlPosition.TOP_CENTER].push($attribution.get(0));
 
+  google.maps.event.addListener(map, 'click', function(e) {
+    selectDistrict(e.latLng);
+  });
+
   var $locationSearch = $("#locationSearch");
   var autocomplete = new google.maps.places.Autocomplete($locationSearch.get(0), { bounds: bounds });
 
@@ -54,8 +61,9 @@
   var placesService = new google.maps.places.PlacesService(map);
   var infoWindow = new google.maps.InfoWindow({});
 
+  var $streetview = $("#streetview-canvas");
   var streetviewService = new google.maps.StreetViewService();
-  var streetview = new google.maps.StreetViewPanorama($("#streetview-canvas").get(0), { imageDateControl: true });
+  var streetview = new google.maps.StreetViewPanorama($streetview.get(0), { imageDateControl: true });
   map.setStreetView(streetview);
 
   google.maps.event.addListener(streetview, "position_changed", function() {
@@ -78,8 +86,8 @@
     .createLayer(map, 'http://appgeo.cartodb.com/api/v2/viz/0e6fe1c4-d3db-11e4-b072-0e018d66dc29/viz.json')
     .addTo(map, 0)
     .done(function (layer) {
-      layer.getSubLayer(0).hide();
       layer.getSubLayer(1).hide();
+      layer.getSubLayer(2).hide();
       cartoLayer = layer;
     });
 
@@ -103,7 +111,48 @@
       $target.addClass('legend-active');
       id = parseInt($target.attr('data-id'), 10);
       cartoLayer.getSubLayer(id).show();
+
+      app.summary(id, selectedDistrict);
+      selectedMetric = id;
     }
+  });
+
+  var $leftExpand = $('#left-expand').on('click', function () {
+    var $container = $("#container-content");
+    $container.animate({ left: $leftExpand.hasClass('expanded') ? '-250px' : '0px'}, {
+      step: function () {
+        google.maps.event.trigger(map, 'resize');
+        google.maps.event.trigger(streetview, 'resize');
+      },
+      complete: function () {
+        $leftExpand.toggleClass('expanded');
+        $leftExpand.find('span').toggleClass('glyphicon-chevron-left').toggleClass('glyphicon-chevron-right');
+      }
+    });
+  });
+
+  var $bottomExpand = $('#bottom-expand').on('click', function () {
+    var $container = $("#container-map");
+    var isExpanded = $bottomExpand.hasClass('expanded');
+
+    if (isExpanded) {
+      $streetview.hide();
+    }
+
+    $container.animate({ height: isExpanded ? '100%' : '66%' }, {
+      step: function () {
+        google.maps.event.trigger(map, 'resize');
+      },
+      complete: function () {
+        $bottomExpand.toggleClass('expanded');
+        $bottomExpand.find('span').toggleClass('glyphicon-chevron-down').toggleClass('glyphicon-chevron-up');
+
+        if (!isExpanded) {
+          $streetview.show();
+          google.maps.event.trigger(streetview, 'resize');
+        }
+      }
+    });
   });
 
   function extractRouteMilepoint(s) {
@@ -320,6 +369,37 @@
     return outParts;
   }
 
+  function selectDistrict(latLng) {
+    var p = 'ST_SetSRID(ST_MakePoint(' + latLng.lng() + ', ' + latLng.lat() + '), 4326)';
+    var where = 'where ST_Contains(the_geom, ' + p + ')';
+
+    db.execute('select number, ' + p + ' as the_geom from ia_districts ' + where)
+      .done(function (fc) {
+        var district = fc.features.length ? fc.features[0].properties.number : 0;
+
+        if (district && district === selectedDistrict) {
+          district = 0;
+        }
+
+        if (district !== selectedDistrict) {
+          var subLayer = cartoLayer.getSubLayer(0);
+
+          if (district) {
+            subLayer.setCartoCSS('#ia_districts [ number != ' + district + '] { polygon-fill: gray; polygon-opacity: 0.2 }');
+          }
+          else {
+            subLayer.setCartoCSS('#null { }');
+          }
+
+          app.summary(selectedMetric, district);
+          selectedDistrict = district;
+        }
+      })
+      .error(function (err) {
+        alert(err);
+      });
+  }
+
   function setMapLocation(loc) {
     if (map.getZoom() < 14) {
       map.setZoom(14);
@@ -341,4 +421,6 @@
   }
 
   goToRouteMilepoint('I-235W 8.51');
+
+  app.summary(selectedMetric, selectedDistrict);
 })();

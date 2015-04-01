@@ -29,48 +29,59 @@
     </div>
   </div>
 
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-3 col-md-2 sidebar">
-        <div class="list-group">
-          <span class="list-group-item legend legend-active" data-id="2">
-            <h4 class="list-group-item-heading">Pavement Condition</h4>
-            <p class="list-group-item-text">
-              <div class="line-symbol" style="background-color: #00e080"></div> 0 - 40<br/>
-              <div class="line-symbol" style="background-color: #f0f040"></div> 40 - 50<br/>
-              <div class="line-symbol" style="background-color: #e0a000"></div> 50 - 80<br/>
-              <div class="line-symbol" style="background-color: #b00000"></div> 80 - 100
-            </p>
-          </span>
-          <span  class="list-group-item legend" data-id="1">
-            <h4 class="list-group-item-heading">Roughness Index</h4>
-            <p class="list-group-item-text">
-              <div class="line-symbol" style="background-color: #00e080"></div> 0.00 - 1.49<br/>
-              <div class="line-symbol" style="background-color: #f0f040"></div> 1.49 - 2.70<br/>
-              <div class="line-symbol" style="background-color: #b00000"></div> 2.70 - 9.70
-            </p>
-          </span>
-          <span  class="list-group-item legend" data-id="0">
-            <h4 class="list-group-item-heading">Average Daily Traffic</h4>
-            <p class="list-group-item-text">
-              <div class="line-symbol" style="background-color: #C7E9B4; height: 2px"></div> 0 - 2,500<br/>
-              <div class="line-symbol" style="background-color: #7FCDBB; height: 3px"></div> 2,500 - 5,000<br/>
-              <div class="line-symbol" style="background-color: #41B6C4; height: 4px"></div> 5,000 - 10,000<br/>
-              <div class="line-symbol" style="background-color: #1D91C0; height: 5px"></div> 10,000 - 20,000<br/>
-              <div class="line-symbol" style="background-color: #225EA8; height: 6px"></div> 20,000 - 40,000<br/>
-              <div class="line-symbol" style="background-color: #0C2C84; height: 7px"></div> 40,000 - 90,400
-            </p>
-          </span>
-        </div>
+  <div id="container-content">
+    <div id="left-sidebar">
+      <div class="list-group">
+        <span class="list-group-item legend legend-active" data-id="3">
+          <h4 class="list-group-item-heading">Pavement Condition</h4>
+          <p class="list-group-item-text">
+            <div class="line-symbol" style="background-color: #b00000"></div> 0 - 40<br/>
+            <div class="line-symbol" style="background-color: #e0a000"></div> 40 - 50<br/>
+            <div class="line-symbol" style="background-color: #f0f040"></div> 50 - 80<br/>
+            <div class="line-symbol" style="background-color: #00e080"></div> 80 - 100
+          </p>
+        </span>
+        <span  class="list-group-item legend" data-id="2">
+          <h4 class="list-group-item-heading">Roughness Index</h4>
+          <p class="list-group-item-text">
+            <div class="line-symbol" style="background-color: #00e080"></div> 0.00 - 1.49<br/>
+            <div class="line-symbol" style="background-color: #f0f040"></div> 1.49 - 2.70<br/>
+            <div class="line-symbol" style="background-color: #b00000"></div> 2.70 - 9.70
+          </p>
+        </span>
+        <span  class="list-group-item legend" data-id="1">
+          <h4 class="list-group-item-heading">Average Daily Traffic</h4>
+          <p class="list-group-item-text">
+            <div class="line-symbol" style="background-color: #C7E9B4; height: 2px"></div> 0 - 2,500<br/>
+            <div class="line-symbol" style="background-color: #7FCDBB; height: 3px"></div> 2,500 - 5,000<br/>
+            <div class="line-symbol" style="background-color: #41B6C4; height: 4px"></div> 5,000 - 10,000<br/>
+            <div class="line-symbol" style="background-color: #1D91C0; height: 5px"></div> 10,000 - 20,000<br/>
+            <div class="line-symbol" style="background-color: #225EA8; height: 6px"></div> 20,000 - 40,000<br/>
+            <div class="line-symbol" style="background-color: #0C2C84; height: 7px"></div> 40,000 - 90,400
+          </p>
+        </span>
       </div>
-      <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <div id="pie-title">State of Iowa</div>
+      <div id="pie-subtitle">roadway miles</div>
+      <canvas id="pie-chart" width="210" height="210"></canvas>
+    </div>
+    <div id="container-view">
+      <div id="container-map">
         <div id="map-canvas">
           <div class="attribution">
             <div class="attributionBackground"></div>
             <div class="attributionText">Transportation data courtesy of Iowa DOT</div>
           </div>
         </div>
-        <div id="streetview-canvas"></div>
+        <div id="bottom-expand-pos">
+          <div id="bottom-expand" class="expand expanded">
+            <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+      <div id="streetview-canvas"></div>
+      <div id="left-expand" class="expand expanded">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
       </div>
     </div>
   </div>
@@ -79,7 +90,9 @@
   <script src="https://maps.googleapis.com/maps/api/js?v=3&libraries=places"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
   <script src="http://libs.cartocdn.com/cartodb.js/v3/3.12/cartodb.js"></script>
+  <script src="Chart.min.js"></script>
   <script src="web-mercator.js"></script>
+  <script src="pie-chart.js"></script>
   <script src="index.js"></script>
 </body>
 </html>
