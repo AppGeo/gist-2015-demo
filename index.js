@@ -97,7 +97,7 @@
   var cartoLayer;
 
   cartodb
-    .createLayer(map, 'http://appgeo.cartodb.com/api/v2/viz/0e6fe1c4-d3db-11e4-b072-0e018d66dc29/viz.json')
+    .createLayer(map, 'https://appgeo.cartodb.com/api/v2/viz/0e6fe1c4-d3db-11e4-b072-0e018d66dc29/viz.json')
     .addTo(map, 0)
     .done(function (layer) {
       layer.getSubLayer(1).hide();
